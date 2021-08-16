@@ -1,16 +1,18 @@
 {
 	"name": "discord-crypto-bot",
 	"version": "1.0.0",
-	"description": "",
+	"description": "a cryptocurrency tracking discord bot",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
+	"website": "https://discord.com/oauth2/authorize?client_id=876175899786104843&permissions=8&scope=bot",
 	"scripts": {
 		"lint": "eslint --fix --ext .ts,.tsx .",
 		"build": "tsc",
 		"dev:watch": "ts-node-dev --respawn --transpile-only ./src/index.ts",
 		"start": "node ."
 	},
-	"author": "",
+	"topics": ["discordjs", "nodejs", "cryptocurrency", "typescript", "mongodb"],
+	"author": "Jude Giordano",
 	"license": "ISC",
 	"dependencies": {
 		"axios": "^0.21.1",
