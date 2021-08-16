@@ -36,8 +36,12 @@ export class Bot {
 			console.log(`${Bot.Client.user?.tag} logged in`);
 			client.user!.setActivity("to the moon! 🚀");
 
-			client.guilds.cache.forEach(async (guild: Guild) => {
-				const roleExists = guild.roles.cache.find(a => a.name == Constants.Role);
+			const guilds = await client.guilds.fetch();
+
+			for (const ouathGuild of guilds) {
+				const guild = await ouathGuild[1].fetch();
+				const roles = await guild.roles.fetch();
+				const roleExists = roles.find(a => a.name == Constants.Role);
 				if (!roleExists) {
 					await guild.roles.create({
 						name: Constants.Role,
@@ -48,14 +52,15 @@ export class Bot {
 				const server = await Server.FindById(guild.id);
 				if (server) {
 					const { trackedCoin } = server as _Server;
-					return await Rest.SetNickName(guild, trackedCoin);
+					await Rest.SetNickName(guild, trackedCoin);
+					continue;
 				}
 				const newServer = await Server.InsertServer({
 					serverName: guild.name,
 					serverId: guild.id
 				});
-				return await Rest.SetNickName(guild, newServer.trackedCoin);
-			});
+				await Rest.SetNickName(guild, newServer.trackedCoin);
+			}
 		} catch (error) {
 			throw new Error(error);
 		}
@@ -63,7 +68,8 @@ export class Bot {
 
 	private static async JoinGuildHandler(guild: Guild): Promise<void> {
 		try {
-			const roleExists = guild.roles.cache.find(a => a.name == Constants.Role);
+			const roles = await guild.roles.fetch();
+			const roleExists = roles.find(a => a.name == Constants.Role);
 			if (!roleExists) {
 				await guild.roles.create({
 					name: Constants.Role,
@@ -131,15 +137,17 @@ export class Bot {
 			if (msg.author.bot) return;
 			if (!msg.content.startsWith(Constants.Prefix)) return;
 
-			const role = msg.guild?.roles.cache.find(a => a.name == Constants.Role);
-			const auth = role?.members.find(a => a.id == msg.author.id);
+			const roles = await msg.guild.roles.fetch();
+			const role = roles.find(a => a.name == Constants.Role);
+			if (!role) throw new Error(`this bot requires the "${Constants.Role}" role`);
+
+			const auth = role.members.find(a => a.id == msg.author.id);
 			if (!auth) return;
 
 			const prefix = msg.content.split(Constants.Prefix)[1];
 			const cmd = Bot.Commands.find(a => a.prefix == prefix?.split(" ")[0]);
 			if (!cmd) return;
 
-			// strip prefix and remove spaces
 			const args = msg.content.split(" ").slice(1).filter(a => a !== null && a.trim() != "");
 			if (args.length <= 0 && cmd.requiredArgs || args.length < cmd.arguments.length)
 				throw new Error(`This Command Has Required Arguments\nCommand Usage:\n${cmd.properUsage}`);
