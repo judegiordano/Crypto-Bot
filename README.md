@@ -16,5 +16,7 @@ $track <coin id>
 ```
 
 The bot will then save your server choice and update its own nickname periodically as the desired cryptocurrency changes in price
+
 ![bitcoin](./snips/bitcoin.PNG)
+
 ![etehreum](./snips/ethereum.PNG)
