@@ -10,6 +10,7 @@ export interface ICommandHandler {
 }
 
 export enum Constants {
+	Role = "Crypto-Bot-Trader",
 	Prefix = "$",
 	Coins = "https://www.coingecko.com/en",
 	Invite = "https://discord.com/api/oauth2/authorize?client_id=876175899786104843&permissions=8&scope=bot",

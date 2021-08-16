@@ -37,10 +37,10 @@ export class Bot {
 			client.user!.setActivity("to the moon! 🚀");
 
 			client.guilds.cache.forEach(async (guild: Guild) => {
-				const roleExists = guild.roles.cache.find(a => a.name == "Crypto-Bot-Trader");
+				const roleExists = guild.roles.cache.find(a => a.name == Constants.Role);
 				if (!roleExists) {
 					await guild.roles.create({
-						name: "Crypto-Bot-Trader",
+						name: Constants.Role,
 						hoist: true,
 						reason: "this role is needed to track currencies"
 					});
@@ -63,10 +63,10 @@ export class Bot {
 
 	private static async JoinGuildHandler(guild: Guild): Promise<void> {
 		try {
-			const roleExists = guild.roles.cache.find(a => a.name == "Crypto-Bot-Trader");
+			const roleExists = guild.roles.cache.find(a => a.name == Constants.Role);
 			if (!roleExists) {
 				await guild.roles.create({
-					name: "Crypto-Bot-Trader",
+					name: Constants.Role,
 					hoist: true,
 					reason: "this role is needed to track currencies"
 				});
@@ -131,7 +131,7 @@ export class Bot {
 			if (msg.author.bot) return;
 			if (!msg.content.startsWith(Constants.Prefix)) return;
 
-			const role = msg.guild?.roles.cache.find(a => a.name == "Crypto-Bot-Trader");
+			const role = msg.guild?.roles.cache.find(a => a.name == Constants.Role);
 			const auth = role?.members.find(a => a.id == msg.author.id);
 			if (!auth) return;
 
